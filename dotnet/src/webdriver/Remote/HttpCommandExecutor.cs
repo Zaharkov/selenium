@@ -154,6 +154,8 @@ namespace OpenQA.Selenium.Remote
             return responseString;
         }
 
+        public TimeSpan Timeout { get { return serverResponseTimeout; } set { serverResponseTimeout = value; } }
+
         private Response CreateResponse(WebRequest request)
         {
             Response commandResponse = new Response();

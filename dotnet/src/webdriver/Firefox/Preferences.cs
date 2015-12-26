@@ -132,13 +132,14 @@ namespace OpenQA.Selenium.Firefox
         /// Writes the preferences to a file.
         /// </summary>
         /// <param name="filePath">The full path to the file to be written.</param>
-        internal void WriteToFile(string filePath)
+        /// <param name="escaping"></param>
+        internal void WriteToFile(string filePath, bool escaping)
         {
             using (TextWriter writer = File.CreateText(filePath))
             {
                 foreach (KeyValuePair<string, string> preference in this.preferences)
                 {
-                    string escapedValue = preference.Value.Replace(@"\", @"\\");
+                    string escapedValue = escaping ? preference.Value.Replace(@"\", @"\\") : preference.Value;
                     writer.WriteLine(string.Format(CultureInfo.InvariantCulture, "user_pref(\"{0}\", {1});", preference.Key, escapedValue));
                 }
             }

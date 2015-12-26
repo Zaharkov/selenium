@@ -725,7 +725,7 @@ FirefoxDriver.prototype.addCookie = function(respond, parameters) {
     cookie.domain = location.hostname;
   } else {
     var currLocation = respond.session.getWindow().location;
-    var currDomain = currLocation.host;
+    var currDomain = '.' + currLocation.host;
     if (currDomain.indexOf(cookie.domain) == -1) {  // Not quite right, but close enough
       throw new WebDriverError(bot.ErrorCode.INVALID_COOKIE_DOMAIN,
           'You may only set cookies for the current domain');

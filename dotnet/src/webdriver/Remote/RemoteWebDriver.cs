@@ -118,6 +118,22 @@ namespace OpenQA.Selenium.Remote
         }
 
         /// <summary>
+        /// Nnnnnnada
+        /// </summary>
+        /// <param name="remoteAddress"></param>
+        /// <param name="sessionId"></param>
+        /// <param name="capabilities"></param>
+        /// <param name="commandTimeout"></param>
+        public RemoteWebDriver(Uri remoteAddress, string sessionId, DesiredCapabilities capabilities, TimeSpan commandTimeout)
+        {
+            this.executor = new HttpCommandExecutor(remoteAddress, commandTimeout);
+            this.StartClient();
+            this.StartSession(sessionId, capabilities);
+            this.mouse = new RemoteMouse(this);
+            this.keyboard = new RemoteKeyboard(this);
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RemoteWebDriver"/> class. This constructor defaults proxy to http://127.0.0.1:4444/wd/hub
         /// </summary>
         /// <param name="desiredCapabilities">An <see cref="ICapabilities"/> object containing the desired capabilities of the browser.</param>
@@ -271,6 +287,27 @@ namespace OpenQA.Selenium.Remote
                 }
 
                 return handleList.AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// HttpCommandExecutor Timeout
+        /// </summary>
+        public TimeSpan Timeout 
+        {
+            get
+            {
+                if (executor is HttpCommandExecutor)
+                    return (executor as HttpCommandExecutor).Timeout;
+                
+                throw new ArgumentException("Executor is not HttpCommandExecutor"); 
+            }
+            set
+            {
+                if (executor is HttpCommandExecutor)
+                    (executor as HttpCommandExecutor).Timeout = value;
+                else
+                    throw new ArgumentException("Executor is not HttpCommandExecutor"); 
             }
         }
 
@@ -1022,6 +1059,17 @@ namespace OpenQA.Selenium.Remote
             DesiredCapabilities returnedCapabilities = new DesiredCapabilities(rawCapabilities);
             this.capabilities = returnedCapabilities;
             this.sessionId = new SessionId(response.SessionId);
+        }
+
+        /// <summary>
+        /// Exists session
+        /// </summary>
+        /// <param name="sessionId"></param>
+        /// <param name="capabilities"></param>
+        protected void StartSession(string sessionId, DesiredCapabilities capabilities)
+        {
+            this.capabilities = capabilities;
+            this.sessionId = new SessionId(sessionId);
         }
 
         /// <summary>

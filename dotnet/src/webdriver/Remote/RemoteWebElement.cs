@@ -89,7 +89,7 @@ namespace OpenQA.Selenium.Remote
                 Dictionary<string, object> parameters = new Dictionary<string, object>();
                 parameters.Add("id", this.elementId);
                 Response commandResponse = this.Execute(DriverCommand.GetElementText, parameters);
-                return commandResponse.Value.ToString();
+                return commandResponse.Value.ToString().Replace(" ", " ");
             }
         }
 

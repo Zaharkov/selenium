@@ -282,7 +282,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Writes this in-memory representation of a profile to disk.
         /// </summary>
-        public void WriteToDisk()
+        public void WriteToDisk(bool escaping = true)
         {
             this.profileDir = GenerateProfileDirectoryName();
             if (!string.IsNullOrEmpty(this.sourceProfileDir))
@@ -297,7 +297,7 @@ namespace OpenQA.Selenium.Firefox
             this.InstallExtensions();
             this.DeleteLockFiles();
             this.DeleteExtensionsCache();
-            this.UpdateUserPreferences();
+            this.UpdateUserPreferences(escaping);
         }
 
         /// <summary>
@@ -327,7 +327,7 @@ namespace OpenQA.Selenium.Firefox
         public string ToBase64String()
         {
             string base64zip = string.Empty;
-            this.WriteToDisk();
+            this.WriteToDisk(false);
 
             using (MemoryStream profileMemoryStream = new MemoryStream())
             {
@@ -407,7 +407,7 @@ namespace OpenQA.Selenium.Firefox
         /// <summary>
         /// Writes the user preferences to the profile.
         /// </summary>
-        private void UpdateUserPreferences()
+        private void UpdateUserPreferences(bool escaping)
         {
             if (this.profilePort == 0)
             {
@@ -442,7 +442,7 @@ namespace OpenQA.Selenium.Firefox
                 }
             }
 
-            this.profilePreferences.WriteToFile(userPrefs);
+            this.profilePreferences.WriteToFile(userPrefs, escaping);
         }
 
         private void ReadDefaultPreferences()
@@ -483,7 +483,7 @@ namespace OpenQA.Selenium.Firefox
                             {
                                 string parsedLine = line.Substring("user_pref(\"".Length);
                                 parsedLine = parsedLine.Substring(0, parsedLine.Length - ");".Length);
-                                string[] parts = line.Split(new string[] { "," }, StringSplitOptions.None);
+                                string[] parts = parsedLine.Split(new [] { "," }, StringSplitOptions.None);
                                 parts[0] = parts[0].Substring(0, parts[0].Length - 1);
                                 prefs.Add(parts[0].Trim(), parts[1].Trim());
                             }
